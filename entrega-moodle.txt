@@ -1,29 +1,75 @@
+================================================================================
 UNIVERSIDAD AUTÓNOMA DE OCCIDENTE (UAO)
 FACULTAD DE INGENIERÍA
 ASIGNATURA: COMPUTACIÓN EN LA NUBE (2026-2)
 PROFESOR: OSCAR HERNANDO MONDRAGÓN
+================================================================================
 
-============================================================
 ENTREGA: MICROPROYECTO 2 (PARCIAL 2) - GRUPO 10
-============================================================
+FECHA DE SUSTENTACIÓN: MIÉRCOLES 7 DE OCTUBRE DE 2026
 
-INTEGRANTES:
+--------------------------------------------------------------------------------
+INTEGRANTES DEL GRUPO:
+--------------------------------------------------------------------------------
 1. Juan Camilo Ballesteros
-   Correo: juan_cam.ballesteros@uao.edu.co
+   Correo institucional: juan_cam.ballesteros@uao.edu.co
 
 2. Valentina Valestegui
-   Correo: valentina.valestegui@uao.edu.co
+   Correo institucional: valentina.valestegui@uao.edu.co
 
 3. Juan Miguel Carabali
-   Correo: juan_miguel.carabali@uao.edu.co
+   Correo institucional: juan_miguel.carabali@uao.edu.co
 
-============================================================
+--------------------------------------------------------------------------------
 ENLACE DEL REPOSITORIO DE GITHUB:
 https://github.com/ballesterossmartsolutionssas/microproyecto2-computacion-nube-g10
-============================================================
+--------------------------------------------------------------------------------
 
-RESUMEN DE COMPONENTES ENTREGADOS:
-- Problema 1: Aprovisionamiento Automatizado (Vagrant control-node + Terraform 2 VMs Azure + Docker 6 réplicas + HAProxy + Ansible Playbook e Inventario).
-- Problema 2: Balanceador de Carga HAProxy (Round-Robin, ACLs por path, Health Checks y Dashboard de estadísticas :8080/stats).
-- Problema 3: Microservicios en Kubernetes (Azure Kubernetes Service - AKS con Ingress Controller NGINX y auto-recuperación/escalado).
-- Punto Opcional (0.5 pts): Despliegue 100% automatizado de AKS con Terraform (ACR, RBAC AcrPull, Docker build/push automático e Ingress) en la carpeta terraform-aks/.
+ESTADO DE LA SUSTENTACIÓN Y RECURSOS EN LA NUBE:
+La sustentación oral y técnica del Microproyecto 2 fue realizada exitosamente 
+en vivo ante el profesor Oscar H. Mondragón a través de Webex.
+
+Durante la sesión se sustentaron y demostraron operativamente todos los puntos:
+1. Problema 1 (Aprovisionamiento IaaS en Azure):
+   - Control-node automatizado con Vagrant (Ubuntu 22.04 LTS en VirtualBox).
+   - Despliegue con Terraform de 2 Máquinas Virtuales en Azure (vm-microservices y vm-haproxy)
+     con su red virtual VNet, subred y reglas NSG.
+   - Instalación automatizada de Docker y despliegue de 6 contenedores (2 réplicas por
+     microservicio: Users, Products, Orders) con política de reinicio persistente (--restart always).
+   - Instalación, configuración y habilitación como servicio systemd de HAProxy.
+   - Demostración del aprovisionamiento automatizado e idempotente mediante Ansible Playbook
+     (playbook.yml) e inventario dinámico (inventory.ini).
+
+2. Problema 2 (Balanceo de Carga y Alta Disponibilidad con HAProxy):
+   - Enrutamiento por path con ACLs hacia los backends respectivos (/api/v1/users,
+     /api/v1/products, /api/v1/orders).
+   - Balanceo equitativo Round-Robin verificado con peticiones consecutivas.
+   - Demostración de failover en tiempo real ante la caída controlada de un contenedor 
+     (docker stop users-1), comprobando 0% de pérdida de peticiones (100% de respuestas HTTP 200).
+   - Dashboard de monitoreo y estadísticas de HAProxy en tiempo real expuesto en el
+     puerto :8080/stats con autenticación administrativa.
+
+3. Problema 3 (Microservicios en Kubernetes - AKS):
+   - Clúster administrado Azure Kubernetes Service (AKS) con namespace dedicado ('microapp').
+   - Despliegue de los 3 microservicios con réplicas mediante Deployments y Services ClusterIP.
+   - Enrutamiento unificado de entrada mediante Ingress Controller NGINX con IP pública.
+   - Verificación de resiliencia, auto-recuperación de pods ante fallos y escalabilidad
+     horizontal dinámica en vivo (kubectl scale deployment orders-service --replicas=4).
+
+4. Punto Opcional (0.5 pts - Terraform + AKS 100% Automatizado):
+   - Orquestación integral de Kubernetes en una sola ejecución (carpeta terraform-aks/):
+     creación del Resource Group, Azure Container Registry (ACR) privado, clúster AKS,
+     asignación de roles RBAC (AcrPull), compilación y subida automática de las imágenes Docker
+     al registro privado, instalación de ingress-nginx y despliegue de todos los manifiestos.
+
+NOTA SOBRE RECURSOS DE AZURE:
+Finalizada y aprobada la sustentación en vivo, la infraestructura en la nube de Azure 
+fue destruida de manera limpia y controlada (mediante 'terraform destroy') con el fin 
+de optimizar y preservar los créditos académicos de la suscripción 'Azure for Students'.
+
+Todo el código fuente, la infraestructura como código (Terraform, Vagrant), los scripts
+de aprovisionamiento (Shell y Ansible), los manifiestos declarativos de Kubernetes, 
+el script maestro de automatización (deploy.ps1) y los registros de evidencia de las pruebas
+quedan completamente preservados, documentados y versionados en el repositorio de GitHub 
+indicado arriba para su posterior consulta y calificación.
+================================================================================

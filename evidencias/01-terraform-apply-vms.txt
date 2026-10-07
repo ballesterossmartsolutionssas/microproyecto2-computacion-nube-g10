@@ -1,0 +1,58 @@
+$ terraform apply -auto-approve      (resumen; log completo en 01a-terraform-apply-vms-completo.log)
+
+Plan: 17 to add, 0 to change, 0 to destroy.
+tls_private_key.ssh_key: Creation complete after 1s [id=d005838fbe2c255b8027d32a608c749b085e5315]
+local_file.private_key: Creation complete after 0s [id=bedb3641c24f888012518a976e507bc2680c2ad6]
+azurerm_resource_group.rg: Creation complete after 6s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2]
+azurerm_network_security_group.nsg: Creation complete after 2s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Network/networkSecurityGroups/nsg-microproyecto2]
+azurerm_public_ip.pip_microservices: Creation complete after 2s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Network/publicIPAddresses/pip-microservices]
+azurerm_public_ip.pip_haproxy: Creation complete after 3s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Network/publicIPAddresses/pip-haproxy]
+local_file.ansible_inventory: Creation complete after 0s [id=d32804f7fb0db875f662e27d486bca4b60788b0f]
+azurerm_virtual_network.vnet: Creation complete after 4s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Network/virtualNetworks/vnet-microproyecto2]
+azurerm_subnet.subnet: Creation complete after 6s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Network/virtualNetworks/vnet-microproyecto2/subnets/subnet-microproyecto2]
+azurerm_network_interface.nic_haproxy: Creation complete after 3s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Network/networkInterfaces/nic-haproxy]
+azurerm_network_interface_security_group_association.nsg_assoc_haproxy: Creation complete after 4s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Network/networkInterfaces/nic-haproxy|/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Network/networkSecurityGroups/nsg-microproyecto2]
+azurerm_network_interface.nic_microservices: Creation complete after 7s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Network/networkInterfaces/nic-microservices]
+azurerm_linux_virtual_machine.vm_haproxy: Creation complete after 13s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Compute/virtualMachines/vm-haproxy]
+azurerm_linux_virtual_machine.vm_microservices: Creation complete after 13s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Compute/virtualMachines/vm-microservices]
+azurerm_network_interface_security_group_association.nsg_assoc_microservices: Creation complete after 17s [id=/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Network/networkInterfaces/nic-microservices|/subscriptions/7117851d-1620-4ed4-a048-a91f8e6267f9/resourceGroups/rg-microproyecto2/providers/Microsoft.Network/networkSecurityGroups/nsg-microproyecto2]
+terraform_data.config_haproxy (remote-exec): === 0. Esperando a que cloud-init termine el primer arranque ===
+terraform_data.config_microservices (remote-exec): === 0. Esperando a que cloud-init termine el primer arranque ===
+terraform_data.config_microservices (remote-exec): === 1. Instalando Docker CE ===
+terraform_data.config_haproxy (remote-exec): === 1. Instalando HAProxy ===
+terraform_data.config_haproxy (remote-exec): === 2. Generando /etc/haproxy/haproxy.cfg (misma plantilla que usa el playbook de Ansible) ===
+terraform_data.config_haproxy (remote-exec): === 3. Validando, habilitando y reiniciando HAProxy ===
+terraform_data.config_haproxy (remote-exec): Configuration file is valid
+terraform_data.config_haproxy (remote-exec): active
+terraform_data.config_haproxy (remote-exec): enabled
+terraform_data.config_haproxy: Creation complete after 57s [id=e7a0aaca-b5d4-8f3d-ecc7-b265f8a7aecc]
+terraform_data.config_microservices (remote-exec): === 2. Habilitando Docker al inicio del sistema ===
+terraform_data.config_microservices (remote-exec): === 3. Construyendo las imágenes desde los Dockerfile ===
+terraform_data.config_microservices (remote-exec): === 4. Levantando 2 instancias por microservicio (restart: always) ===
+terraform_data.config_microservices (remote-exec): === 5. Verificación ===
+terraform_data.config_microservices (remote-exec): NAMES        IMAGE                 STATUS         PORTS
+terraform_data.config_microservices (remote-exec): orders-2     orders-service:v1     Up 2 seconds   0.0.0.0:3013->3003/tcp, [::]:3013->3003/tcp
+terraform_data.config_microservices (remote-exec): orders-1     orders-service:v1     Up 3 seconds   0.0.0.0:3003->3003/tcp, [::]:3003->3003/tcp
+terraform_data.config_microservices (remote-exec): products-2   products-service:v1   Up 3 seconds   0.0.0.0:3012->3002/tcp, [::]:3012->3002/tcp
+terraform_data.config_microservices (remote-exec): products-1   products-service:v1   Up 4 seconds   0.0.0.0:3002->3002/tcp, [::]:3002->3002/tcp
+terraform_data.config_microservices (remote-exec): users-2      users-service:v1      Up 5 seconds   0.0.0.0:3011->3001/tcp, [::]:3011->3001/tcp
+terraform_data.config_microservices (remote-exec): users-1      users-service:v1      Up 6 seconds   0.0.0.0:3001->3001/tcp, [::]:3001->3001/tcp
+terraform_data.config_microservices (remote-exec): localhost:3001/health -> {"status":"UP","service":"users-service","instance":"users-1","port":3001,"timestamp":"2026-10-07T10:12:38.689Z"}
+terraform_data.config_microservices (remote-exec): localhost:3011/health -> {"status":"UP","service":"users-service","instance":"users-2","port":3001,"timestamp":"2026-10-07T10:12:38.700Z"}
+terraform_data.config_microservices (remote-exec): localhost:3002/health -> {"status":"UP","service":"products-service","instance":"products-1","port":3002,"timestamp":"2026-10-07T10:12:38.708Z"}
+terraform_data.config_microservices (remote-exec): localhost:3012/health -> {"status":"UP","service":"products-service","instance":"products-2","port":3002,"timestamp":"2026-10-07T10:12:38.717Z"}
+terraform_data.config_microservices (remote-exec): localhost:3003/health -> {"status":"UP","service":"orders-service","instance":"orders-1","port":3003,"timestamp":"2026-10-07T10:12:38.725Z"}
+terraform_data.config_microservices (remote-exec): localhost:3013/health -> {"status":"UP","service":"orders-service","instance":"orders-2","port":3003,"timestamp":"2026-10-07T10:12:38.736Z"}
+terraform_data.config_microservices: Creation complete after 1m53s [id=68083388-7bc1-c9be-dfbe-34926cb6d526]
+Apply complete! Resources: 17 added, 0 changed, 0 destroyed.
+Outputs:
+haproxy_private_ip = "10.0.1.10"
+haproxy_public_ip = "40.116.88.10"
+location = "northcentralus"
+microservices_private_ip = "10.0.1.20"
+microservices_public_ip = "20.98.51.137"
+resource_group_name = "rg-microproyecto2"
+ssh_command_haproxy = "ssh -i id_rsa azureuser@40.116.88.10"
+ssh_command_microservices = "ssh -i id_rsa azureuser@20.98.51.137"
+url_api = "http://40.116.88.10/api/users  |  /api/products  |  /api/orders"
+url_stats = "http://40.116.88.10:8080/stats  (admin / admin123)"

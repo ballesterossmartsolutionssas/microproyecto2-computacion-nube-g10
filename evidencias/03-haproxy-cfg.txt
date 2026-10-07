@@ -1,0 +1,86 @@
+$ cat /etc/haproxy/haproxy.cfg   (vm-haproxy)
+global
+    log /dev/log local0
+    log /dev/log local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy/admin.sock mode 660 level admin
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    # Si un servidor cae entre dos chequeos, la petición se reintenta en otro servidor del backend:
+    # el cliente no ve el error mientras HAProxy aún no lo ha marcado DOWN.
+    option  redispatch
+    retries 3
+    timeout connect 3s
+    timeout client  30s
+    timeout server  30s
+    # Chequeo de salud cada 2 s: 2 fallos seguidos = DOWN, 2 éxitos = UP
+    default-server inter 2s fall 2 rise 2
+    errorfile 400 /etc/haproxy/errors/400.http
+    errorfile 403 /etc/haproxy/errors/403.http
+    errorfile 408 /etc/haproxy/errors/408.http
+    errorfile 500 /etc/haproxy/errors/500.http
+    errorfile 502 /etc/haproxy/errors/502.http
+    errorfile 503 /etc/haproxy/errors/503.http
+    errorfile 504 /etc/haproxy/errors/504.http
+
+# --- Punto de entrada único (puerto 80), enrutamiento por prefijo de ruta ---
+frontend http_front
+    bind *:80
+
+    acl is_users    path_beg /api/users
+    acl is_products path_beg /api/products
+    acl is_orders   path_beg /api/orders
+
+    use_backend users_back    if is_users
+    use_backend products_back if is_products
+    use_backend orders_back   if is_orders
+    default_backend not_found
+
+    # Cabecera que dice qué servidor del backend respondió (útil con curl -i)
+    http-response set-header X-Backend-Server %b/%s
+
+# --- Backends: 2 servidores por microservicio, round-robin y chequeo HTTP a /health ---
+backend users_back
+    balance roundrobin
+    option httpchk GET /health
+    http-check expect status 200
+    server users1 10.0.1.20:3001 check
+    server users2 10.0.1.20:3011 check
+
+backend products_back
+    balance roundrobin
+    option httpchk GET /health
+    http-check expect status 200
+    server products1 10.0.1.20:3002 check
+    server products2 10.0.1.20:3012 check
+
+backend orders_back
+    balance roundrobin
+    option httpchk GET /health
+    http-check expect status 200
+    server orders1 10.0.1.20:3003 check
+    server orders2 10.0.1.20:3013 check
+
+backend not_found
+    http-request return status 404 content-type text/plain string "Ruta no encontrada. Use /api/users, /api/products o /api/orders"
+
+# --- Página de estadísticas en el puerto 8080, protegida con usuario y contraseña ---
+listen stats
+    bind *:8080
+    stats enable
+    stats uri /stats
+    stats refresh 5s
+    stats auth admin:admin123
+    stats admin if TRUE
+    stats show-legends
+
+$ systemctl is-active haproxy; systemctl is-enabled haproxy
+active
+enabled

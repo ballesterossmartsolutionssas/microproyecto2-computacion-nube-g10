@@ -1,0 +1,14 @@
+$ curl -u admin:admin123 'http://40.116.88.10:8080/stats;csv'  (pxname, svname, status, stot=peticiones)
+# pxname,svname,status,stot
+users_back,users1,UP,17
+users_back,users2,UP,27
+users_back,BACKEND,UP,41
+products_back,products1,UP,5
+products_back,products2,UP,3
+products_back,BACKEND,UP,8
+orders_back,orders1,UP,4
+orders_back,orders2,UP,3
+orders_back,BACKEND,UP,7
+
+$ curl -o /dev/null -w '%{http_code}' http://40.116.88.10:8080/stats   (sin credenciales)
+401

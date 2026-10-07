@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# control-node del Microproyecto 2: Ubuntu 22.04 con Terraform, Ansible, Azure CLI, kubectl y Docker.
+# Desde aquí se ejecuta todo el aprovisionamiento (terraform apply) hacia Azure.
+# La carpeta raíz del proyecto queda montada en /home/vagrant/microproyecto2.
+
+Vagrant.configure("2") do |config|
+  config.vm.boot_timeout = 1800
+
+  config.vm.define :controlNode do |controlNode|
+    controlNode.vm.box = "bento/ubuntu-22.04"
+    controlNode.vm.hostname = "control-node"
+    controlNode.vm.network :private_network, ip: "192.168.100.10"
+    controlNode.vm.synced_folder "..", "/home/vagrant/microproyecto2"
+
+    controlNode.vm.provider "virtualbox" do |v|
+      v.cpus = 1  # con 2 CPU se congela al arrancar en este PC (VirtualBox sobre Hyper-V)
+      v.memory = 2048
+      v.name = "control-node-microproyecto2"
+    end
+
+    # Instala Ansible, Terraform, Azure CLI, kubectl y Docker
+    controlNode.vm.provision "shell", path: "provision-control-node.sh"
+  end
+end

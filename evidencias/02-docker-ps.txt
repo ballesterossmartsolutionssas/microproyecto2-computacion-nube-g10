@@ -1,0 +1,11 @@
+$ sudo docker ps
+NAMES        IMAGE                 STATUS          PORTS
+orders-2     orders-service:v1     Up 23 minutes   0.0.0.0:3013->3003/tcp, [::]:3013->3003/tcp
+orders-1     orders-service:v1     Up 23 minutes   0.0.0.0:3003->3003/tcp, [::]:3003->3003/tcp
+products-2   products-service:v1   Up 23 minutes   0.0.0.0:3012->3002/tcp, [::]:3012->3002/tcp
+products-1   products-service:v1   Up 23 minutes   0.0.0.0:3002->3002/tcp, [::]:3002->3002/tcp
+users-2      users-service:v1      Up 23 minutes   0.0.0.0:3011->3001/tcp, [::]:3011->3001/tcp
+users-1      users-service:v1      Up 23 minutes   0.0.0.0:3001->3001/tcp, [::]:3001->3001/tcp
+
+$ systemctl is-enabled docker
+enabled

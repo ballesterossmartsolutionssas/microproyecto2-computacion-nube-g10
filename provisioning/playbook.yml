@@ -1,0 +1,53 @@
+# Alternativa en Ansible a los scripts Shell (mismo resultado).
+# Desde el control-node:  ansible-playbook -i inventory.ini playbook.yml
+---
+- name: "vm-microservices: Docker + 6 contenedores"
+  hosts: microservices
+  become: true
+  tasks:
+    - name: Copiar el código de los microservicios
+      copy:
+        src: ../microservices
+        dest: /tmp/
+
+    - name: Copiar el script de configuración
+      copy:
+        src: setup-microservices.sh
+        dest: /tmp/setup-microservices.sh
+        mode: "0755"
+
+    - name: Instalar Docker y levantar los contenedores
+      command: /tmp/setup-microservices.sh /tmp/microservices
+
+- name: "vm-haproxy: HAProxy"
+  hosts: haproxy
+  become: true
+  vars:
+    microservices_ip: 10.0.1.20
+  tasks:
+    - name: Instalar HAProxy
+      apt:
+        name: haproxy
+        state: present
+        update_cache: true
+        lock_timeout: 600
+
+    - name: Generar /etc/haproxy/haproxy.cfg desde la plantilla
+      template:
+        src: haproxy.cfg.j2
+        dest: /etc/haproxy/haproxy.cfg
+        mode: "0644"
+        validate: haproxy -c -f %s
+      notify: Reiniciar HAProxy
+
+    - name: HAProxy activo y habilitado al inicio
+      systemd:
+        name: haproxy
+        state: started
+        enabled: true
+
+  handlers:
+    - name: Reiniciar HAProxy
+      systemd:
+        name: haproxy
+        state: restarted

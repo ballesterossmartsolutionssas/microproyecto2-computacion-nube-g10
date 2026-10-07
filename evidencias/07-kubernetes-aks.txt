@@ -1,0 +1,61 @@
+﻿
+==============================================================================
+  kubectl get all -n microapp
+==============================================================================
+NAME                                   READY   STATUS    RESTARTS   AGE
+pod/orders-service-5f78cbff7b-884mf    1/1     Running   0          2m3s
+pod/orders-service-5f78cbff7b-sh9gs    1/1     Running   0          2m18s
+pod/products-service-66f5c8fb8-kss69   1/1     Running   0          2m19s
+pod/products-service-66f5c8fb8-psz7v   1/1     Running   0          2m19s
+pod/users-service-5c8bfb7fd7-2jbxf     1/1     Running   0          2m20s
+pod/users-service-5c8bfb7fd7-w86g7     1/1     Running   0          2m20s
+
+NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+service/orders-svc     ClusterIP   10.0.154.82    <none>        3003/TCP   2m18s
+service/products-svc   ClusterIP   10.0.130.44    <none>        3002/TCP   2m19s
+service/users-svc      ClusterIP   10.0.141.111   <none>        3001/TCP   2m20s
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/orders-service     2/2     2            2           2m19s
+deployment.apps/products-service   2/2     2            2           2m20s
+deployment.apps/users-service      2/2     2            2           2m21s
+
+NAME                                         DESIRED   CURRENT   READY   AGE
+replicaset.apps/orders-service-5f78cbff7b    2         2         2       2m19s
+replicaset.apps/products-service-66f5c8fb8   2         2         2       2m20s
+replicaset.apps/users-service-5c8bfb7fd7     2         2         2       2m21s
+NAME               CLASS   HOSTS   ADDRESS         PORTS   AGE
+microapp-ingress   nginx   *       20.201.50.119   80      2m20s
+
+==============================================================================
+  ACCESO EXTERNO POR EL INGRESS (20.201.50.119)
+==============================================================================
+
+--- /api/users ---
+  peticion 1 -> HTTP 200  instancia=users-service-5c8bfb7fd7-2jbxf
+  peticion 2 -> HTTP 200  instancia=users-service-5c8bfb7fd7-w86g7
+  peticion 3 -> HTTP 200  instancia=users-service-5c8bfb7fd7-w86g7
+
+--- /api/products ---
+  peticion 1 -> HTTP 200  instancia=products-service-66f5c8fb8-kss69
+  peticion 2 -> HTTP 200  instancia=products-service-66f5c8fb8-psz7v
+  peticion 3 -> HTTP 200  instancia=products-service-66f5c8fb8-psz7v
+
+--- /api/orders ---
+  peticion 1 -> HTTP 200  instancia=orders-service-5f78cbff7b-884mf
+  peticion 2 -> HTTP 200  instancia=orders-service-5f78cbff7b-884mf
+  peticion 3 -> HTTP 200  instancia=orders-service-5f78cbff7b-sh9gs
+
+==============================================================================
+  kubectl scale deployment orders-service --replicas=4 (con trafico continuo)
+==============================================================================
+deployment.apps/orders-service scaled
+NAME                              READY   STATUS    RESTARTS   AGE     IP             NODE                             NOMINATED NODE   READINESS GATES
+orders-service-5f78cbff7b-884mf   1/1     Running   0          2m42s   10.244.0.240   aks-system-26997990-vmss000000   <none>           <none>
+orders-service-5f78cbff7b-9mptt   1/1     Running   0          32s     10.244.0.165   aks-system-26997990-vmss000000   <none>           <none>
+orders-service-5f78cbff7b-rqbmq   1/1     Running   0          32s     10.244.0.130   aks-system-26997990-vmss000000   <none>           <none>
+orders-service-5f78cbff7b-sh9gs   1/1     Running   0          2m57s   10.244.0.89    aks-system-26997990-vmss000000   <none>           <none>
+
+  Pods distintos que respondieron: 4  ->  orders-service-5f78cbff7b-9mptt, orders-service-5f78cbff7b-sh9gs, orders-service-5f78cbff7b-884mf, orders-service-5f78cbff7b-rqbmq
+  Peticiones fallidas durante el escalado: 0 de 40
+

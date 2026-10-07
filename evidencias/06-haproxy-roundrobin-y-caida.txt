@@ -1,0 +1,71 @@
+﻿
+==============================================================================
+  ENRUTAMIENTO Y ROUND-ROBIN EN HAPROXY (40.116.88.10)
+==============================================================================
+
+--- /api/users ---
+  peticion 1 -> HTTP 200  instancia=users-1
+  peticion 2 -> HTTP 200  instancia=users-2
+  peticion 3 -> HTTP 200  instancia=users-1
+  peticion 4 -> HTTP 200  instancia=users-2
+
+--- /api/products ---
+  peticion 1 -> HTTP 200  instancia=products-2
+  peticion 2 -> HTTP 200  instancia=products-1
+  peticion 3 -> HTTP 200  instancia=products-2
+  peticion 4 -> HTTP 200  instancia=products-1
+
+--- /api/orders ---
+  peticion 1 -> HTTP 200  instancia=orders-2
+  peticion 2 -> HTTP 200  instancia=orders-1
+  peticion 3 -> HTTP 200  instancia=orders-2
+  peticion 4 -> HTTP 200  instancia=orders-1
+
+==============================================================================
+  PAGINA DE ESTADISTICAS
+==============================================================================
+  sin credenciales -> HTTP 401   |   admin:admin123 -> HTTP 200
+
+==============================================================================
+  CAIDA DE users-1: peticiones continuas mientras se detiene el contenedor
+==============================================================================
+  t=0.5s -> HTTP 200  instancia=users-1
+  t=1s -> HTTP 200  instancia=users-2
+  t=1.5s -> HTTP 200  instancia=users-1
+  t=2s -> HTTP 200  instancia=users-2
+  t=2.5s -> HTTP 200  instancia=users-1
+  t=3s -> HTTP 200  instancia=users-2
+  t=3.5s -> HTTP 200  instancia=users-1
+  t=4s -> HTTP 200  instancia=users-2
+  t=4.5s -> HTTP 200  instancia=users-1
+  t=5s -> HTTP 200  instancia=users-2
+  t=5.5s -> HTTP 200  instancia=users-1
+  t=6s -> HTTP 200  instancia=users-2
+  t=6.5s -> HTTP 200  instancia=users-1
+  t=7s -> HTTP 200  instancia=users-2
+  t=7.5s -> HTTP 200  instancia=users-1
+  t=8s -> HTTP 200  instancia=users-2
+  t=8.5s -> HTTP 200  instancia=users-2
+  t=9s -> HTTP 200  instancia=users-2
+  t=9.5s -> HTTP 200  instancia=users-2
+  t=10s -> HTTP 200  instancia=users-2
+  t=10.5s -> HTTP 200  instancia=users-2
+  t=11s -> HTTP 200  instancia=users-2
+  t=11.5s -> HTTP 200  instancia=users-2
+  t=12s -> HTTP 200  instancia=users-2
+  t=12.5s -> HTTP 200  instancia=users-2
+  t=13s -> HTTP 200  instancia=users-2
+  t=13.5s -> HTTP 200  instancia=users-2
+  t=14s -> HTTP 200  instancia=users-2
+  t=14.5s -> HTTP 200  instancia=users-2
+  t=15s -> HTTP 200  instancia=users-2
+  Peticiones fallidas durante la caida: 0 de 30
+  (en http://40.116.88.10:8080/stats users1 debe verse DOWN en rojo)
+  Estado en HAProxy: users1 = DOWN
+  Estado en HAProxy: users2 = UP
+  users-1 encendido; el round-robin vuelve a repartir:
+  peticion 1 -> HTTP 200  instancia=users-2
+  peticion 2 -> HTTP 200  instancia=users-1
+  peticion 3 -> HTTP 200  instancia=users-2
+  peticion 4 -> HTTP 200  instancia=users-1
+

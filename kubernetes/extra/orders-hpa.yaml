@@ -1,0 +1,23 @@
+# EXTRA (no lo pide el enunciado y NO se aplica por defecto).
+# El enunciado pide escalar orders a 4 réplicas con `kubectl scale`. Si este HPA estuviera
+# aplicado, devolvería orders a 2 réplicas a los pocos minutos por bajo consumo de CPU.
+# Para mostrarlo:  kubectl apply -f kubernetes/extra/orders-hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: orders-hpa
+  namespace: microapp
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: orders-service
+  minReplicas: 2
+  maxReplicas: 4
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50

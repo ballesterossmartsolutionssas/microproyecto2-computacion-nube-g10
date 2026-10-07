@@ -1,0 +1,6 @@
+subscription_id       = "7117851d-1620-4ed4-a048-a91f8e6267f9"
+resource_group_name   = "rg-microproyecto2"
+location              = "northcentralus"
+admin_username        = "azureuser"
+vm_size_haproxy       = "Standard_B2ats_v2"
+vm_size_microservices = "Standard_B2ats_v2"

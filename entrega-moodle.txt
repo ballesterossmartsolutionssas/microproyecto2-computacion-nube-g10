@@ -1,0 +1,29 @@
+UNIVERSIDAD AUTÓNOMA DE OCCIDENTE (UAO)
+FACULTAD DE INGENIERÍA
+ASIGNATURA: COMPUTACIÓN EN LA NUBE (2026-2)
+PROFESOR: OSCAR HERNANDO MONDRAGÓN
+
+============================================================
+ENTREGA: MICROPROYECTO 2 (PARCIAL 2) - GRUPO 10
+============================================================
+
+INTEGRANTES:
+1. Juan Camilo Ballesteros
+   Correo: juan_cam.ballesteros@uao.edu.co
+
+2. Valentina Valestegui
+   Correo: valentina.valestegui@uao.edu.co
+
+3. Juan Miguel Carabali
+   Correo: juan_miguel.carabali@uao.edu.co
+
+============================================================
+ENLACE DEL REPOSITORIO DE GITHUB:
+https://github.com/ballesterossmartsolutionssas/microproyecto2-computacion-nube-g10
+============================================================
+
+RESUMEN DE COMPONENTES ENTREGADOS:
+- Problema 1: Aprovisionamiento Automatizado (Vagrant control-node + Terraform 2 VMs Azure + Docker 6 réplicas + HAProxy + Ansible Playbook e Inventario).
+- Problema 2: Balanceador de Carga HAProxy (Round-Robin, ACLs por path, Health Checks y Dashboard de estadísticas :8080/stats).
+- Problema 3: Microservicios en Kubernetes (Azure Kubernetes Service - AKS con Ingress Controller NGINX y auto-recuperación/escalado).
+- Punto Opcional (0.5 pts): Despliegue 100% automatizado de AKS con Terraform (ACR, RBAC AcrPull, Docker build/push automático e Ingress) en la carpeta terraform-aks/.
